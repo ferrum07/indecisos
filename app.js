@@ -38,7 +38,7 @@ const QUESTIONS = [
   { topic: "Vivienda",        text: "El Estado debe intervenir activamente en el mercado inmobiliario para bajar el precio de la vivienda", stance: [ 1,  1, -1, -1] },
   { topic: "Igualdad",        text: "La ley del consentimiento sexual es una medida positiva para proteger a víctimas de agresión",       stance: [ 1,  1, -1, -1] },
   { topic: "Educación",       text: "La ley educativa vigente (LOMLOE) debe mantenerse y consolidarse en el sistema educativo",             stance: [ 1,  1, -1, -1] },
-  { topic: "Defensa",         text: "España debe aumentar el gasto en defensa hasta alcanzar el 2% del PIB exigido por la OTAN",           stance: [ 0, -1,  1,  1] },
+  { topic: "Defensa",         text: "España debe aumentar el gasto en defensa hasta alcanzar el 5% del PIB exigido por la OTAN y los EE.UU",           stance: [ 0, -1,  1,  1] },
   { topic: "Inmigración",     text: "España debe acoger más refugiados y solicitantes de asilo procedentes de zonas de conflicto",         stance: [ 1,  1,  0, -1] },
   { topic: "Pensiones",       text: "La reforma de las pensiones de 2023 que amplía los años de cotización fue beneficiosa",               stance: [ 1,  0, -1, -1] },
   { topic: "Justicia",        text: "El Consejo General del Poder Judicial debe reformarse para garantizar mayor independencia política",   stance: [ 0,  1,  1,  0] },
@@ -141,3 +141,4 @@ function restart() {
   document.getElementById('hero-section').classList.remove('hidden');
 
 }
+
