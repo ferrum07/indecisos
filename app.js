@@ -36,7 +36,7 @@ const QUESTIONS = [
   { topic: "Sanidad",         text: "La sanidad pública debe reducir los conciertos económicos con hospitales y clínicas privadas",         stance: [ 1,  1, -1, -1] },
   { topic: "Pensiones",       text: "Los planes de pensiones privados deben complementar el sistema público de pensiones",                  stance: [ 0, -1,  1,  1] },
   { topic: "Vivienda",        text: "El Estado debe intervenir activamente en el mercado inmobiliario para bajar el precio de la vivienda", stance: [ 1,  1, -1, -1] },
-  { topic: "Igualdad",        text: "La ley del 'solo sí es sí' fue una medida positiva para proteger a víctimas de agresión sexual",       stance: [ 1,  1, -1, -1] },
+  { topic: "Igualdad",        text: "La ley del consentimiento sexual es una medida positiva para proteger a víctimas de agresión",       stance: [ 1,  1, -1, -1] },
   { topic: "Educación",       text: "La ley educativa vigente (LOMLOE) debe mantenerse y consolidarse en el sistema educativo",             stance: [ 1,  1, -1, -1] },
   { topic: "Defensa",         text: "España debe aumentar el gasto en defensa hasta alcanzar el 2% del PIB exigido por la OTAN",           stance: [ 0, -1,  1,  1] },
   { topic: "Inmigración",     text: "España debe acoger más refugiados y solicitantes de asilo procedentes de zonas de conflicto",         stance: [ 1,  1,  0, -1] },
@@ -139,4 +139,5 @@ function restart() {
   document.getElementById('step-results').classList.add('hidden');
   document.getElementById('step-quiz').classList.add('hidden');
   document.getElementById('hero-section').classList.remove('hidden');
+
 }
