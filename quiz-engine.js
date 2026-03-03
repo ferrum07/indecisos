@@ -121,6 +121,9 @@ function getScore(stance, answer) {
   return 1;
 }
 
+// Variables globales para descarga
+let _lastSorted = [], _lastTotals = {}, _lastMaxScore = 1;
+
 // ── 2 & 4. RESULTADOS: reveal escalonado + tarjeta ganador + compartir ──
 function showResults() {
   document.getElementById('step-quiz').classList.add('hidden');
@@ -138,6 +141,11 @@ function showResults() {
   });
 
   const sorted   = [...parties].sort((a, b) => totals[b] - totals[a]);
+
+  // Guardar para descarga
+  _lastSorted   = sorted;
+  _lastTotals   = totals;
+  _lastMaxScore = maxScore;
   const winner   = sorted[0];
   const winPct   = Math.round((totals[winner] / maxScore) * 100);
   const winName  = partyNames[winner] || winner;
@@ -219,6 +227,36 @@ function showResults() {
     </button>`;
 
   snap.insertAdjacentElement('afterend', shareDiv);
+
+  // ── DONACIONES ──
+  const donateDiv = document.createElement('div');
+  donateDiv.className = 'donation-section';
+  donateDiv.innerHTML = `
+    <span class="donation-icon">☕</span>
+    <div class="donation-title">¿Te ha sido útil? Apoya el proyecto</div>
+    <p class="donation-desc">
+      indecisos.es es un proyecto independiente, sin publicidad ni financiación política.
+      Con tu aportación ayudas a mantenerlo y a añadir más tests.
+    </p>
+    <div class="donation-buttons">
+      <a href="https://www.paypal.com/donate/?hosted_button_id=XXXXXXXXXXXXXXX"
+         target="_blank" rel="noopener" class="btn-donate btn-donate--paypal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/>
+        </svg>
+        Donar con PayPal
+      </a>
+      <a href="https://buy.stripe.com/XXXXXXXXXXXXXXX"
+         target="_blank" rel="noopener" class="btn-donate btn-donate--stripe">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C4.358 23.abort 7.277 24 11.127 24c2.704 0 4.954-.608 6.542-1.899 1.679-1.372 2.572-3.354 2.572-5.706 0-4.111-2.377-5.917-6.265-7.245z"/>
+        </svg>
+        Donar con Tarjeta
+      </a>
+    </div>
+    <p class="donation-note">🔒 Pago seguro · Cualquier cantidad ayuda · Gracias 💙</p>`;
+
+  shareDiv.insertAdjacentElement('afterend', donateDiv);
 }
 
 function copyResult(text, btn) {
@@ -235,21 +273,183 @@ function restartQuiz() {
   document.getElementById('hero-section').classList.remove('hidden');
   document.querySelector('.result-winner-card')?.remove();
   document.querySelector('.share-actions')?.remove();
+  document.querySelector('.donation-section')?.remove();
   cur = 0; ans = [];
+}
+
+/* ══════════════════════════════════════════════
+   DESCARGA: Canvas nativo (funciona en local y servidor)
+   ══════════════════════════════════════════════ */
+
+function buildResultCanvas(lastSorted, lastTotals, lastMaxScore) {
+  const { parties, colors, logos = {}, partyNames = {} } = QUIZ_DATA;
+  const sorted = lastSorted;
+
+  const W      = 800;
+  const ROW_H  = 72;
+  const PAD    = 40;
+  const HEADER = 180;
+  const WINNER = 220;
+  const FOOTER = 56;
+  const H      = HEADER + WINNER + sorted.length * ROW_H + PAD + FOOTER;
+
+  const canvas = document.createElement('canvas');
+  canvas.width  = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Fondo
+  ctx.fillStyle = '#F5F2EB';
+  ctx.fillRect(0, 0, W, H);
+
+  const winner   = sorted[0];
+  const winColor = colors[winner];
+  const winName  = partyNames[winner] || winner;
+  const winPct   = Math.round((lastTotals[winner] / lastMaxScore) * 100);
+
+  // Barra de color superior
+  ctx.fillStyle = winColor;
+  ctx.fillRect(0, 0, W, 6);
+
+  // HEADER
+  ctx.fillStyle = '#85786E';
+  ctx.font = 'bold 13px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('TU RESULTADO · INDECISOS.ES', W / 2, 40);
+
+  ctx.fillStyle = '#2D241E';
+  ctx.font = 'bold 32px Inter, sans-serif';
+  ctx.fillText('Afinidad Política', W / 2, 84);
+
+  // Línea divisoria
+  ctx.strokeStyle = '#E6DFD3';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD, 104); ctx.lineTo(W - PAD, 104); ctx.stroke();
+
+  // BLOQUE GANADOR
+  const wy = 120;
+  // Círculo logo ganador
+  const logoSize = 80;
+  const lx = W / 2 - logoSize / 2;
+  const ly = wy;
+
+  // Fondo redondeado logo
+  roundRect(ctx, lx, ly, logoSize, logoSize, 16, '#FFFFFF');
+  ctx.strokeStyle = '#E6DFD3'; ctx.lineWidth = 2;
+  roundRectStroke(ctx, lx, ly, logoSize, logoSize, 16);
+
+  // Nombre ganador
+  ctx.fillStyle = winColor;
+  ctx.font = 'bold 28px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(winName, W / 2, wy + logoSize + 34);
+
+  // Porcentaje ganador
+  ctx.font = 'bold 56px Inter, sans-serif';
+  ctx.fillText(winPct + '%', W / 2, wy + logoSize + 34 + 58);
+
+  ctx.fillStyle = '#85786E';
+  ctx.font = '14px Inter, sans-serif';
+  ctx.fillText('de afinidad con tus respuestas', W / 2, wy + logoSize + 34 + 58 + 24);
+
+  // LISTA DE PARTIDOS
+  let rowY = HEADER + WINNER + 8;
+  sorted.forEach((p, idx) => {
+    const pct  = Math.round((lastTotals[p] / lastMaxScore) * 100);
+    const name = partyNames[p] || p;
+    const col  = colors[p];
+    const isTop = idx === 0;
+
+    // Fondo fila
+    roundRect(ctx, PAD, rowY, W - PAD * 2, ROW_H - 6, 10, isTop ? '#FFFFFF' : '#FAF8F4');
+    if (isTop) {
+      ctx.strokeStyle = col; ctx.lineWidth = 2;
+      roundRectStroke(ctx, PAD, rowY, W - PAD * 2, ROW_H - 6, 10);
+    } else {
+      ctx.strokeStyle = '#E6DFD3'; ctx.lineWidth = 1;
+      roundRectStroke(ctx, PAD, rowY, W - PAD * 2, ROW_H - 6, 10);
+    }
+
+    // Logo partido (cuadrado)
+    const lsz = 36;
+    roundRect(ctx, PAD + 12, rowY + (ROW_H - 6) / 2 - lsz / 2, lsz, lsz, 8, '#FFFFFF');
+    ctx.strokeStyle = '#E6DFD3'; ctx.lineWidth = 1;
+    roundRectStroke(ctx, PAD + 12, rowY + (ROW_H - 6) / 2 - lsz / 2, lsz, lsz, 8);
+    // Inicial del partido en el cuadrado
+    ctx.fillStyle = col;
+    ctx.font = 'bold 16px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(name[0].toUpperCase(), PAD + 12 + lsz / 2, rowY + (ROW_H - 6) / 2 + 6);
+
+    // Nombre
+    ctx.fillStyle = '#2D241E';
+    ctx.font = 'bold 15px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(name, PAD + 12 + lsz + 12, rowY + 26);
+
+    // Barra
+    const barX = PAD + 12 + lsz + 12;
+    const barW = W - PAD * 2 - lsz - 24 - 70;
+    const barY = rowY + 36;
+    const barH2 = 8;
+    roundRect(ctx, barX, barY, barW, barH2, 4, '#EBE5D9');
+    roundRect(ctx, barX, barY, Math.max(4, barW * pct / 100), barH2, 4, col);
+
+    // Porcentaje
+    ctx.fillStyle = col;
+    ctx.font = 'bold 16px Inter, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(pct + '%', W - PAD - 12, rowY + 30);
+
+    rowY += ROW_H;
+  });
+
+  // FOOTER
+  ctx.fillStyle = '#B0A89E';
+  ctx.font = '12px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('indecisos.es · Orientación de voto sin etiquetas · Proyecto independiente', W / 2, H - 18);
+
+  return canvas;
+}
+
+function roundRect(ctx, x, y, w, h, r, fill) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+}
+function roundRectStroke(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  ctx.stroke();
 }
 
 async function downloadImage() {
   const btn = document.getElementById('btn-download-img');
   btn.textContent = 'Generando…'; btn.disabled = true;
   try {
-    const canvas = await html2canvas(document.getElementById('results-snapshot'), {
-      scale: 2, useCORS: true, backgroundColor: '#F5F2EB'
-    });
-    const link = document.createElement('a');
+    const canvas  = buildResultCanvas(_lastSorted, _lastTotals, _lastMaxScore);
+    const dataUrl = canvas.toDataURL('image/png');
+    const link    = document.createElement('a');
     link.download = 'mi-resultado-indecisos.png';
-    link.href = canvas.toDataURL('image/png');
+    link.href     = dataUrl;
+    document.body.appendChild(link);
     link.click();
-  } catch(e) { alert('No se pudo generar la imagen.'); }
+    document.body.removeChild(link);
+  } catch(e) {
+    console.error(e);
+    alert('Error al generar la imagen: ' + e.message);
+  }
   btn.textContent = '📷 Descargar imagen'; btn.disabled = false;
 }
 
@@ -257,16 +457,21 @@ async function downloadPDF() {
   const btn = document.getElementById('btn-download-pdf');
   btn.textContent = 'Generando…'; btn.disabled = true;
   try {
-    const canvas = await html2canvas(document.getElementById('results-snapshot'), {
-      scale: 2, useCORS: true, backgroundColor: '#F5F2EB'
-    });
+    const canvas  = buildResultCanvas(_lastSorted, _lastTotals, _lastMaxScore);
+    const imgData = canvas.toDataURL('image/png');
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const imgW = 190, imgH = (canvas.height * imgW) / canvas.width;
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 15, imgW, imgH);
-    pdf.setFontSize(9); pdf.setTextColor(130, 120, 110);
-    pdf.text('indecisos.es — Orientación de voto sin etiquetas', 105, imgH + 22, { align: 'center' });
+    const pdf  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const imgW = 190;
+    const imgH = (canvas.height * imgW) / canvas.width;
+    const pageH = pdf.internal.pageSize.getHeight();
+    const top   = Math.max(10, (pageH - imgH) / 2);
+    pdf.addImage(imgData, 'PNG', 10, top, imgW, imgH);
+    pdf.setFontSize(8); pdf.setTextColor(150, 140, 130);
+    pdf.text('indecisos.es · Orientación de voto sin etiquetas', 105, pageH - 8, { align: 'center' });
     pdf.save('mi-resultado-indecisos.pdf');
-  } catch(e) { alert('No se pudo generar el PDF.'); }
+  } catch(e) {
+    console.error(e);
+    alert('Error al generar el PDF: ' + e.message);
+  }
   btn.textContent = '📄 Descargar PDF'; btn.disabled = false;
 }
