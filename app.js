@@ -1,11 +1,11 @@
 const PARTIES = ['PSOE', 'Sumar', 'PP', 'Vox'];
-const COLORS  = { PSOE: '#E4003A', Sumar: '#E05A00', PP: '#0056A2', Vox: '#63BE21' };
+const COLORS  = { PSOE: '#ff0000', Sumar: '#ff0080', PP: '#0056A2', Vox: '#63BE21' };
 
 // Logotipos oficiales en alta calidad (PNG con fondo transparente)
 const LOGOS = { 
-  PSOE: '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Logo_PSOE.svg/512px-Logo_PSOE.svg.png" alt="PSOE">', 
-  Sumar: '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Logo_Sumar.svg/512px-Logo_Sumar.svg.png" alt="Sumar">', 
-  PP: '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Logo_del_Partido_Popular_%282019%29.svg/512px-Logo_del_Partido_Popular_%282019%29.svg.png" alt="PP">', 
+  PSOE: '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Logo_PSOE_comercial_2021.svg/1280px-Logo_PSOE_comercial_2021.svg.png" alt="PSOE">', 
+  Sumar: '<img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Sumar_icon.svg" alt="Sumar">', 
+  PP: '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Logo_del_PP_%282022%29.svg/1920px-Logo_del_PP_%282022%29.svg.png" alt="PP">', 
   Vox: '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Vox_logo.svg/512px-Vox_logo.svg.png" alt="Vox">' 
 };
 
