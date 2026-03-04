@@ -47,8 +47,25 @@ function getTopicColor(topic) {
   return TOPIC_COLORS[topic] || '#8A5A44';
 }
 
+// Número de preguntas por sesión
+const QUESTIONS_PER_SESSION = 20;
+
+// Baraja Fisher-Yates y selecciona N preguntas al azar
+function pickRandomQuestions(questions, n) {
+  const pool = [...questions];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, n);
+}
+
+// Preguntas activas de esta sesión (se asignan al iniciar)
+let sessionQuestions = [];
+
 function startQuiz() {
-  ans = new Array(QUIZ_DATA.questions.length).fill(null);
+  sessionQuestions = pickRandomQuestions(QUIZ_DATA.questions, QUESTIONS_PER_SESSION);
+  ans = new Array(sessionQuestions.length).fill(null);
   cur = 0;
   document.getElementById('hero-section').classList.add('hidden');
   document.getElementById('step-quiz').classList.remove('hidden');
@@ -56,8 +73,8 @@ function startQuiz() {
 }
 
 function render() {
-  const q     = QUIZ_DATA.questions[cur];
-  const total = QUIZ_DATA.questions.length;
+  const q     = sessionQuestions[cur];
+  const total = sessionQuestions.length;
   const color = getTopicColor(q.topic);
 
   // Progreso con color dinámico por tema
@@ -106,7 +123,7 @@ function pick(i) {
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('bnext').addEventListener('click', () => {
-    if (cur < QUIZ_DATA.questions.length - 1) { cur++; render(); }
+    if (cur < sessionQuestions.length - 1) { cur++; render(); }
     else showResults();
   });
   document.getElementById('bprev').addEventListener('click', () => {
@@ -130,12 +147,12 @@ function showResults() {
   document.getElementById('step-results').classList.remove('hidden');
 
   const { parties, colors, logos = {}, partyNames = {} } = QUIZ_DATA;
-  const maxScore = QUIZ_DATA.questions.length * 3;
+  const maxScore = sessionQuestions.length * 3;
   const totals   = {};
   parties.forEach(p => totals[p] = 0);
   ans.forEach((a, qi) => {
     if (a === null) return;
-    QUIZ_DATA.questions[qi].stance.forEach((stance, pi) => {
+    sessionQuestions[qi].stance.forEach((stance, pi) => {
       totals[parties[pi]] += getScore(stance, a);
     });
   });

@@ -462,10 +462,16 @@ body {
   .lc-desc  { font-size: 0.77rem; }
   .lc-tag   { font-size: 0.66rem; }
   .lc-urgente-badge { font-size: 0.58rem; padding: 2px 6px; top: 7px; right: 7px; }
-  .hero { padding: var(--space-xl) var(--space-md) var(--space-lg); }
-  .hero h1 { font-size: clamp(2rem, 9vw, 2.6rem); }
-  .how-it-works { flex-direction: column; align-items: center; gap: var(--space-xs); }
-  .how-step { max-width: 100%; width: 100%; }
+  .hero { padding: 28px var(--space-md) 24px; }
+  .hero-badge { margin-bottom: 10px; font-size: 0.72rem; padding: 5px 14px; }
+  .participant-counter { margin-top: 0 !important; margin-bottom: 10px; font-size: 0.8rem; padding: 7px 14px; }
+  .hero h1 { font-size: clamp(1.9rem, 9vw, 2.4rem); margin-bottom: 8px; }
+  .hero p  { font-size: 0.95rem; margin-bottom: 20px; line-height: 1.55; }
+  .how-it-works { flex-direction: row; flex-wrap: nowrap; gap: 8px; margin: 0 auto 20px; max-width: 100%; }
+  .how-step { flex: 1; min-width: 0; max-width: none; width: auto; padding: 10px 6px; font-size: 0.74rem; line-height: 1.35; border-radius: 10px; }
+  .step-icon { font-size: 1.2rem; margin-bottom: 4px; }
+  .btn-start { max-width: 100%; padding: 15px; font-size: 1rem; }
+  .start-sub { font-size: 0.76rem; margin-top: 8px; }
   .card { padding: var(--space-md); }
   .vote-grid { grid-template-columns: 1fr; gap: var(--space-xs); }
   .vote-btn  { flex-direction: row; padding: var(--space-sm) var(--space-md); text-align: left; gap: var(--space-sm); justify-content: flex-start; }
