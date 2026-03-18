@@ -436,18 +436,18 @@ body {
   .site-nav { padding: 14px 16px; }
 
   /* LANDING HERO */
-  .landing-hero { padding: 36px 16px 20px; max-width: 100%; }
-  .landing-hero h1 { font-size: clamp(2.2rem, 10vw, 3rem); margin: 10px 0 12px; }
+  .landing-hero { padding: 40px 20px 28px; max-width: 100%; }
+  .landing-hero h1 { font-size: clamp(2.2rem, 10vw, 3rem); margin: 12px 0 14px; }
   .landing-hero p  { font-size: 0.98rem; max-width: 100%; }
 
   /* WRAP — margen lateral base */
   .wrap { padding: 0 16px 48px; }
 
-  /* LANDING GRID */
+  /* LANDING GRID — padding lateral explícito para que las cards no toquen el borde */
   .landing-grid {
     grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 0 0 48px;   /* el padding lateral viene del .wrap */
+    gap: 12px;
+    padding: 0 16px 48px;
   }
   .landing-card--nacional,
   .landing-card--cyl,
@@ -457,16 +457,15 @@ body {
   .landing-card {
     flex-direction: row;
     align-items: center;
-    padding: 14px 16px;   /* 16px horizontal = respira bien */
+    padding: 18px 16px;
     min-height: auto;
-    border-radius: 14px;
+    border-radius: 16px;
     gap: 14px;
   }
   .lc-icon  { font-size: 1.8rem; flex-shrink: 0; }
   .lc-title { font-size: 0.97rem; }
-  .lc-desc  { font-size: 0.78rem; }
-  .lc-tag   { font-size: 0.66rem; margin-bottom: 3px; }
-  .lc-urgente-badge { font-size: 0.58rem; padding: 2px 6px; top: 8px; right: 8px; }
+  .lc-desc  { font-size: 0.78rem; line-height: 1.45; }
+  .lc-tag   { font-size: 0.66rem; margin-bottom: 4px; }
 
   /* HERO DEL TEST */
   .hero { padding: 28px 16px 24px; }
