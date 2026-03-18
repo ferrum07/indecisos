@@ -47,7 +47,6 @@
       <span class="lc-tag lc-tag--cyl">Castilla y León</span>
       <h2 class="lc-title">Elecciones CyL 2026</h2>
       <p class="lc-desc">20 preguntas aleatorias · PP, PSOE, Vox, Sumar, UPL y Por Ávila</p>
-      <p class="lc-date" id="cyl-countdown">📅 15 de marzo de 2026</p>
     </div>
     <span class="lc-arrow">→</span>
   </a>
@@ -68,17 +67,5 @@
   <p>indecisos.es · Proyecto sin afiliación política · <a href="aviso-legal.html">Aviso Legal</a></p>
 </footer>
 
-<script>
-  const target = new Date('2026-03-15T08:00:00');
-  const el = document.getElementById('cyl-countdown');
-  function tick() {
-    const diff = target - new Date();
-    if (diff <= 0) { el.textContent = '📅 ¡Hoy es el día!'; return; }
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor((diff % 86400000) / 3600000);
-    el.textContent = d > 0 ? `⏳ Faltan ${d} días y ${h}h` : `⏳ Faltan ${h} horas`;
-  }
-  tick(); setInterval(tick, 60000);
-</script>
 </body>
 </html>
