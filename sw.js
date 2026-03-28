@@ -9,6 +9,8 @@ const ASSETS = [
   '/aviso-legal.html',
   '/generales/index.html',
   '/generales/app.js',
+  '/andalucia/index.html',
+  '/andalucia/app.js',
   '/cyl/index.html',
   '/cyl/app.js',
   '/logos/psoe.png',
